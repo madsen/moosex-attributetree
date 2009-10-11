@@ -1,5 +1,5 @@
 MooseX::AttributeTree - Inherit attribute values like HTML+CSS does
-
+-------------------------------------------------------------------
 
 SYNOPSIS
 ========
