@@ -17,11 +17,12 @@ package MooseX::AttributeTree;
 # ABSTRACT: Inherit attribute values like HTML+CSS does
 #---------------------------------------------------------------------
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 =head1 DEPENDENCIES
 
-MooseX::AttributeTree depends on L<MooseX::Role::Parameterized>, which
+MooseX::AttributeTree depends on
+{{$t->dependency_link('MooseX::Role::Parameterized')}}, which
 can be found on CPAN.
 
 =cut
@@ -123,7 +124,7 @@ If the parent attribute is not set (or is undef), then inheritance
 stops and the accessor will behave like a normal accessor.
 
 If your attribute has a predicate method, it reports whether the
-attribute has ben set on that object.  The predicate has no knowledge
+attribute has been set on that object.  The predicate has no knowledge
 of any value that might be inherited from a parent.  This means that
 C<< $object->has_value >> may return false even though
 C<< $object->value >> would return a value (inherited from the parent).
@@ -134,11 +135,17 @@ attribute only on this object, and would never affect a parent object.
 =head1 BUGS AND LIMITATIONS
 
 There is no inline version of the accessor methods, so using the
-TreeInherit trait will slow down access to that attribute.
+TreeInherit trait will slow down access to that attribute.  But in
+practice, it hasn't been slow enough to be noticeable.
 
 No attempt is made to detect circular dependencies, which may cause
 an infinite loop.  (This should not be an issue in a proper tree
 structure, which should not have circular dependencies.)
+
+If an accessor returns C<undef>, there's no way to tell whether no
+ancestor had the attribute set, or one of them explicitly set it to
+C<undef>.  (Well, you could walk the inheritance tree yourself and
+call the predicate method of each ancestor.)
 
 =for Pod::Loom-insert_after
 AUTHOR
