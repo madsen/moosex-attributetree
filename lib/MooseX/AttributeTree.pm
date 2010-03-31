@@ -31,15 +31,58 @@ use MooseX::Role::Parameterized;
 
 use MooseX::AttributeTree::Accessor ();
 
+=attr parent_link
+
+This is the name of the attribute which links to the object's parent.
+The default is C<parent>.
+
+=attr fetch_method
+
+This is the name of the method to call in the parent object to ask for
+the value of an attribute.  The method is passed the name of this
+attribute as its sole argument.  This allows attributes to be
+inherited without requiring the parent object to know about every
+possible attribute.
+
+If C<fetch_method> is not set, then the parent's value is fetched by
+calling the method with the same name as the attribute's read accessor
+method.  In that case, no parameters are passed to the parent method.
+
+=attr default
+
+This attribute will provide the default value for the inherited
+attribute when no value has been set on this object and no value could
+be inherited from the parent.  It has the same semantics as Moose's
+standard C<default> option, in that it can be either a Value or a
+CodeRef to call as a method on the object with no parameters.
+
+The difference is that the default value is not stored in the object.
+If you provide a CodeRef, it will be called I<every time> the default
+value is needed.
+
+=cut
+
 parameter qw(parent_link
   is      ro
   isa     Str
   default parent
 );
 
+parameter qw(fetch_method
+  is      ro
+  isa     Str
+);
+
+parameter qw(default
+  is      ro
+  isa     Maybe[Value|CodeRef]
+);
+
 # Hook accessor_metaclass to apply the MooseX::AttributeTree::Accessor role:
 role {
-  my $parent_link = (shift)->parent_link;
+  my $parent_link  = $_[0]->parent_link;
+  my $fetch_method = $_[0]->fetch_method;
+  my $default      = $_[0]->default;
 
   around accessor_metaclass => sub {
     my $orig = shift;
@@ -48,7 +91,9 @@ role {
     return Moose::Meta::Class->create_anon_class(
       superclasses => [ $self->$orig(@_) ],
       roles => [ 'MooseX::AttributeTree::Accessor',
-                 { parent_link => $parent_link } ],
+                 { parent_link  => $parent_link,
+                   fetch_method => $fetch_method,
+                   default      => $default } ],
       cache => 1
     )->name
   };
@@ -99,7 +144,8 @@ inherited).
 
 The parent object does not need to be the same type as the child
 object, but it must have a method with the same name as the
-attribute's accessor method.  (The parent's method may be an attribute
+attribute's accessor method (unless you supply a C<fetch_method>).
+(The parent's method may be an attribute
 accessor method, but it doesn't have to be.)  If the parent doesn't
 have the right method, you'll get a runtime error if the child tries
 to call it.
@@ -122,6 +168,24 @@ the C<TreeInherit> trait:
 
 If the parent attribute is not set (or is undef), then inheritance
 stops and the accessor will behave like a normal accessor.
+
+Sometimes it's not convenient for the parent object to have a separate
+method for each attribute that a child object might want to inherit.
+In that case, you can supply a C<fetch_method> to the C<TreeInherit>
+trait.
+
+  has other_value => (
+    is     => 'ro',
+    traits => [ TreeInherit => { fetch_method => 'get_inherited' } ],
+  );
+
+With C<fetch_method>, the inherited value will come from
+
+  $self->parent->get_inherited('other_value');
+
+instead of the usual
+
+  $self->parent->other_value();
 
 If your attribute has a predicate method, it reports whether the
 attribute has been set on that object.  The predicate has no knowledge

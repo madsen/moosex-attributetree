@@ -17,7 +17,7 @@ package MooseX::AttributeTree::Accessor;
 # ABSTRACT: Moose accessor role for inheritance through the object tree
 #---------------------------------------------------------------------
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 use MooseX::Role::Parameterized;
 
@@ -27,8 +27,22 @@ parameter qw(parent_link
   required 1
 );
 
+parameter qw(fetch_method
+  is       ro
+  isa      Maybe[Str]
+  required 1
+);
+
+parameter qw(default
+  is       ro
+  isa      Maybe[Value|CodeRef]
+  required 1
+);
+
 role {
-  my $parent_link = (shift)->parent_link;
+  my $parent_link  = $_[0]->parent_link;
+  my $fetch_method = $_[0]->fetch_method;
+  my $default      = $_[0]->default;
 
   # I haven't created inline versions of the methods yet:
   method 'is_inline' => sub { 0 };
@@ -45,9 +59,17 @@ role {
         my $class = $attr->associated_class;
         my $parent = $class->find_attribute_by_name($parent_link)
                            ->get_value($_[0]);
-        return undef unless $parent;
-        my $method = $attr->get_read_method;
-        return $parent->$method;
+        my $result;
+        if ($parent) {
+          if ($fetch_method) {
+            $result    = $parent->$fetch_method($attr->name);
+          } else {
+            my $method = $attr->get_read_method;
+            $result    = $parent->$method;
+          }
+        } # end if $parent
+        return (defined $result ? $result :
+                ref $default ? $_[0]->$default : $default);
       } # end else this object has no value for the attribute
     } # end anonymous accessor sub
   }; # end _generate_accessor_method
@@ -65,9 +87,17 @@ role {
         my $class = $attr->associated_class;
         my $parent = $class->find_attribute_by_name($parent_link)
                            ->get_value($_[0]);
-        return undef unless $parent;
-        my $method = $attr->get_read_method;
-        return $parent->$method;
+        my $result;
+        if ($parent) {
+          if ($fetch_method) {
+            $result    = $parent->$fetch_method($attr->name);
+          } else {
+            my $method = $attr->get_read_method;
+            $result    = $parent->$method;
+          }
+        } # end if $parent
+        return (defined $result ? $result :
+                ref $default ? $_[0]->$default : $default);
       } # end else this object has no value for the attribute
     } # end anonymous reader sub
   }; # end _generate_reader_method

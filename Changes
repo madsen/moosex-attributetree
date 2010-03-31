@@ -1,6 +1,7 @@
 Revision history for MooseX::AttributeTree
 
 0.02   NOT
+	- Added fetch_method & default attributes
 	- Now has tests
 
 0.01   October 20, 2009
