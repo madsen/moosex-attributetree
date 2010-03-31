@@ -131,7 +131,7 @@ check_values('root change', @values);
 #---------------------------------------------------------------------
 $node{a}->value('A value');
 
-my @values = qw(
+@values = qw(
   root ROOT root
   a    A    root
   aa   aa   root
