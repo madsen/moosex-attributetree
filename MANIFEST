@@ -8,5 +8,6 @@ lib/MooseX/AttributeTree.pm
 lib/MooseX/AttributeTree/Accessor.pm
 t/00.load.t
 t/10.oneclass.t
+t/20.twoclasses.t
 t/release-pod-coverage.t
 t/release-pod-syntax.t
