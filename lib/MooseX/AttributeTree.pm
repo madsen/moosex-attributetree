@@ -33,7 +33,7 @@ use MooseX::AttributeTree::Accessor ();
 
 =attr parent_link
 
-This is the name of the attribute which links to the object's parent.
+This is the name of the method to call to retrieve the object's parent.
 The default is C<parent>.
 
 =attr fetch_method
@@ -150,10 +150,10 @@ accessor method, but it doesn't have to be.)  If the parent doesn't
 have the right method, you'll get a runtime error if the child tries
 to call it.
 
-By default, MooseX::AttributeTree expects the link to the parent
-object to be stored in the C<parent> attribute.  However, you can use
-any attribute as the link by passing the appropriate C<parent_link> to
-the C<TreeInherit> trait:
+By default, MooseX::AttributeTree expects to get the parent object by
+calling the object's C<parent> method.  However, you can use any
+method to retrieve the link by passing the appropriate C<parent_link>
+to the C<TreeInherit> trait:
 
   has ancestor => (
     is       => 'rw',
@@ -166,8 +166,9 @@ the C<TreeInherit> trait:
     traits => [ TreeInherit => { parent_link => 'ancestor' } ],
   );
 
-If the parent attribute is not set (or is undef), then inheritance
-stops and the accessor will behave like a normal accessor.
+If the method returns C<undef>, then inheritance stops and the accessor
+will behave like a normal accessor.  (Normally, C<parent_link> will be
+the name of an attribute accessor method, but it doesn't have to be.)
 
 Sometimes it's not convenient for the parent object to have a separate
 method for each attribute that a child object might want to inherit.

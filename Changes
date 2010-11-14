@@ -1,7 +1,8 @@
 Revision history for MooseX::AttributeTree
 
 0.03   NOT
-	- Generated accessor methods are slightly faster
+	- Generated accessor methods are faster
+	- parent_link is now a method name, not necessarily an attribute
 
 0.02   June 19, 2010
 	- Added fetch_method & default attributes
