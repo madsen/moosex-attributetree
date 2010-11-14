@@ -1,6 +1,6 @@
 Revision history for MooseX::AttributeTree
 
-0.03   NOT
+0.03   November 14, 2010
 	- Generated accessor methods are faster
 	- parent_link is now a method name, not necessarily an attribute
 
