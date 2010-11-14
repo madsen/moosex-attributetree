@@ -50,6 +50,7 @@ role {
   method '_generate_accessor_method' => sub {
     my $attr = (shift)->associated_attribute;
     my $class = $attr->associated_class;
+    my $parent_attr = $class->find_attribute_by_name($parent_link);
     my ($method, @args) = $fetch_method
         ? ($fetch_method, $attr->name)
         : ($attr->get_read_method);
@@ -61,8 +62,8 @@ role {
         return $attr->get_value($_[0]);
       } else {
         my $result;
-        if (my $parent = $class->find_attribute_by_name($parent_link)
-                               ->get_value($_[0])) {
+        $parent_attr ||= $class->find_attribute_by_name($parent_link);
+        if (my $parent = $parent_attr->get_value($_[0])) {
           $result = $parent->$method(@args);
         } # end if $parent
         return (defined $result ? $result :
@@ -74,6 +75,7 @@ role {
   method '_generate_reader_method' => sub {
     my $attr = (shift)->associated_attribute;
     my $class = $attr->associated_class;
+    my $parent_attr = $class->find_attribute_by_name($parent_link);
     my ($method, @args) = $fetch_method
         ? ($fetch_method, $attr->name)
         : ($attr->get_read_method);
@@ -86,8 +88,8 @@ role {
         return $attr->get_value($_[0]);
       } else {
         my $result;
-        if (my $parent = $class->find_attribute_by_name($parent_link)
-                               ->get_value($_[0])) {
+        $parent_attr ||= $class->find_attribute_by_name($parent_link);
+        if (my $parent = $parent_attr->get_value($_[0])) {
           $result = $parent->$method(@args);
         } # end if $parent
         return (defined $result ? $result :
