@@ -160,3 +160,5 @@ for my $i (0 .. $#values) {
 }
 
 check_values('b cleared', @values);
+
+done_testing;
