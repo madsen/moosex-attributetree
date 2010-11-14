@@ -17,7 +17,7 @@ package MooseX::AttributeTree::Accessor;
 # ABSTRACT: Moose accessor role for inheritance through the object tree
 #---------------------------------------------------------------------
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 use MooseX::Role::Parameterized;
 
@@ -49,6 +49,10 @@ role {
 
   method '_generate_accessor_method' => sub {
     my $attr = (shift)->associated_attribute;
+    my $class = $attr->associated_class;
+    my ($method, @args) = $fetch_method
+        ? ($fetch_method, $attr->name)
+        : ($attr->get_read_method);
 
     return sub {
       $attr->set_value($_[0], $_[1]) if scalar(@_) == 2;
@@ -56,17 +60,10 @@ role {
       if ($attr->has_value($_[0])) {
         return $attr->get_value($_[0]);
       } else {
-        my $class = $attr->associated_class;
-        my $parent = $class->find_attribute_by_name($parent_link)
-                           ->get_value($_[0]);
         my $result;
-        if ($parent) {
-          if ($fetch_method) {
-            $result    = $parent->$fetch_method($attr->name);
-          } else {
-            my $method = $attr->get_read_method;
-            $result    = $parent->$method;
-          }
+        if (my $parent = $class->find_attribute_by_name($parent_link)
+                               ->get_value($_[0])) {
+          $result = $parent->$method(@args);
         } # end if $parent
         return (defined $result ? $result :
                 ref $default ? $_[0]->$default : $default);
@@ -76,6 +73,10 @@ role {
 
   method '_generate_reader_method' => sub {
     my $attr = (shift)->associated_attribute;
+    my $class = $attr->associated_class;
+    my ($method, @args) = $fetch_method
+        ? ($fetch_method, $attr->name)
+        : ($attr->get_read_method);
 
     return sub {
       $attr->throw_error('Cannot assign a value to a read-only accessor',
@@ -84,17 +85,10 @@ role {
       if ($attr->has_value($_[0])) {
         return $attr->get_value($_[0]);
       } else {
-        my $class = $attr->associated_class;
-        my $parent = $class->find_attribute_by_name($parent_link)
-                           ->get_value($_[0]);
         my $result;
-        if ($parent) {
-          if ($fetch_method) {
-            $result    = $parent->$fetch_method($attr->name);
-          } else {
-            my $method = $attr->get_read_method;
-            $result    = $parent->$method;
-          }
+        if (my $parent = $class->find_attribute_by_name($parent_link)
+                               ->get_value($_[0])) {
+          $result = $parent->$method(@args);
         } # end if $parent
         return (defined $result ? $result :
                 ref $default ? $_[0]->$default : $default);
