@@ -1,6 +1,6 @@
 Revision history for MooseX::AttributeTree
 
-0.04   NOT
+0.04   October 11, 2011
 	- Maintain internal class cache because Moose can't cache
 	  parameterized roles
 
