@@ -15,18 +15,15 @@ inherited).
 
 INSTALLATION
 
-To install this module type the following:
+To install this module, run the following commands:
 
-   perl Makefile.PL
-   make
-   make test
-   make install
+{{ $t->build_instructions }}
 
 
 
 DEPENDENCIES
 
-This module requires the MooseX::Role::Parameterized module from CPAN.
+{{ $t->dependency_list }}
 
 
 
@@ -40,9 +37,4 @@ CHANGES
 
 COPYRIGHT AND LICENCE
 
-Copyright 2009 Christopher J. Madsen.
-
-This work is published under the same licensing terms as Perl itself, which may
-be found at http://www.perl.org.  The existance of this work does not imply that
-it is fit for any purpose implied by the code or accompanying documentation.
-There is no warranty whatsoever.  Use at your own risk.
+{{ local $_ = $zilla->license->notice; chomp; $_ }}
