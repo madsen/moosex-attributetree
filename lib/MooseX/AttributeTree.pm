@@ -17,7 +17,8 @@ package MooseX::AttributeTree;
 # ABSTRACT: Inherit attribute values like HTML+CSS does
 #---------------------------------------------------------------------
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
+use 5.008;
 
 =head1 DEPENDENCIES
 
@@ -78,6 +79,9 @@ parameter qw(default
   isa     Maybe[Value|CodeRef]
 );
 
+# Moose can't cache roles with parameters, so we'll do it ourselves:
+our %cache;
+
 # Hook accessor_metaclass to apply the MooseX::AttributeTree::Accessor role:
 role {
   my $parent_link  = $_[0]->parent_link;
@@ -88,14 +92,20 @@ role {
     my $orig = shift;
     my $self = shift;
 
-    return Moose::Meta::Class->create_anon_class(
-      superclasses => [ $self->$orig(@_) ],
+    my @superclasses = $self->$orig(@_);
+
+    my $key = join(';', join(',', @superclasses),
+                   $parent_link, $fetch_method || '');
+    $key .= ";$default" if defined $default;
+
+    ($cache{$key} ||= Moose::Meta::Class->create_anon_class(
+      superclasses => \@superclasses,
       roles => [ 'MooseX::AttributeTree::Accessor',
                  { parent_link  => $parent_link,
                    fetch_method => $fetch_method,
                    default      => $default } ],
-      cache => 1
-    )->name
+      cache => 0
+    ))->name;
   };
 };
 
