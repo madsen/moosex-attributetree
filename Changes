@@ -1,7 +1,9 @@
 Revision history for MooseX::AttributeTree
 
-0.05   NOT
+0.05   2013-10-05
 	- Verify minimum Moose version at runtime
+	- Release tests are now located in xt/ so they don't run
+	  during normal testing
 
 0.04   2011-10-11
 	- Maintain internal class cache because Moose can't cache
