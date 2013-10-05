@@ -1,16 +1,16 @@
 Revision history for MooseX::AttributeTree
 
-0.04   October 11, 2011
+0.04   2011-10-11
 	- Maintain internal class cache because Moose can't cache
 	  parameterized roles
 
-0.03   November 14, 2010
+0.03   2010-11-14
 	- Generated accessor methods are faster
 	- parent_link is now a method name, not necessarily an attribute
 
-0.02   June 19, 2010
+0.02   2010-06-19
 	- Added fetch_method & default attributes
 	- Now has tests
 
-0.01   October 20, 2009
+0.01   2009-10-20
 	- Initial release
