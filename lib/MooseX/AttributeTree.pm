@@ -17,7 +17,7 @@ package MooseX::AttributeTree;
 # ABSTRACT: Inherit attribute values like HTML+CSS does
 #---------------------------------------------------------------------
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 use 5.008;
 
 =head1 DEPENDENCIES
@@ -27,6 +27,9 @@ MooseX::AttributeTree depends on
 can be found on CPAN.
 
 =cut
+
+# Verify Moose version, but don't import because we're a Role
+use Moose 2.0205 (); # bugfix for parameterized traits
 
 use MooseX::Role::Parameterized;
 

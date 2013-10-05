@@ -16,11 +16,9 @@
 # Test MooseX::AttributeTree on container/leaf classes
 #---------------------------------------------------------------------
 
-use Test::More tests => 141;
+use Test::More 0.88 tests => 140; # done_testing
 
-BEGIN {
-    use_ok('MooseX::AttributeTree');
-}
+use MooseX::AttributeTree;
 
 #=====================================================================
 # Classes for testing:
