@@ -1,5 +1,11 @@
+/.build/
+/_build/
 /blib/
+/Build
+/Build.bat
 Makefile
+/META.*
+/MYMETA.*
 /pm_to_blib
 MooseX-AttributeTree-*.tar.gz
 MooseX-AttributeTree-*/
