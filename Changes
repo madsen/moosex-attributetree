@@ -1,6 +1,6 @@
 Revision history for MooseX::AttributeTree
 
-0.06   NOT
+0.06   2015-06-27
 	- Give all modules the same version as the distribution
 
 0.05   2013-10-05
