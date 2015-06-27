@@ -17,7 +17,8 @@ package MooseX::AttributeTree::Accessor;
 # ABSTRACT: Moose accessor role for inheritance through the object tree
 #---------------------------------------------------------------------
 
-our $VERSION = '0.03';
+# VERSION
+# This file is part of {{$dist}} {{$dist_version}} ({{$date}})
 
 use MooseX::Role::Parameterized;
 
